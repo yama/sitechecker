@@ -298,7 +298,7 @@ EOT;
 	function make_snapshot($mode)
 	{
 		$output = '';
-		$msg = '';
+		$msg    = '';
 		
 		$excludes = $this->excludes;
 		
@@ -313,7 +313,6 @@ EOT;
 		{
 			if(is_dir($file)) continue;
 			$md5sum = md5_file($file);
-//			$file = mb_convert_encoding($file,'UTF-8',mb_detect_order());
 			$file = str_replace($this->target_dir,'',$file);
 			$line[] = $md5sum . '-:-' . $file;
 		}
@@ -336,7 +335,7 @@ EOT;
 		{
 			$rs = file_put_contents($this->snapshot_file, $output);
 			if($rs!==false) $msg = '<p class="ok">スナップショットを更新しました。</p>';
-			else $msg ='<p class="ng">スナップショットを更新できませんでした。</p>';
+			else            $msg = '<p class="ng">スナップショットを更新できませんでした。</p>';
 		}
 		return $msg;
 	}
