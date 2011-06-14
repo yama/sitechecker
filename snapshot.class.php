@@ -389,3 +389,38 @@ EOT;
 		return $src;
 	}
 }
+
+
+
+if (!function_exists('file_put_contents')) {
+   function file_put_contents($filename, $content, $flags=0, $resource=NULL) {
+
+      #-- prepare
+      $mode = ($flags & FILE_APPEND ? 'a' : 'w' ) . 'b';
+      $incl = $flags & FILE_USE_INCLUDE_PATH;
+      $length = strlen($content);
+//      $resource && trigger_error('EMULATED file_put_contents does not support $resource parameter.', E_USER_ERROR);
+      
+      #-- write non-scalar?
+      if (is_array($content) || is_object($content)) {
+         $content = implode('', (array)$content);
+      }
+
+      #-- open for writing
+      $f = fopen($filename, $mode, $incl);
+      if ($f) {
+      
+         // locking
+         if (($flags & LOCK_EX) && !flock($f, LOCK_EX)) {
+            return fclose($f) && false;
+         }
+
+         // write
+         $written = fwrite($f, $content);
+         fclose($f);
+         
+         #-- only report success, if completely saved
+         return($length == $written);
+      }
+   }
+}
